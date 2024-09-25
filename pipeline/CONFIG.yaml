@@ -1,0 +1,18 @@
+#--------Data--------
+DATA_PATH : 'data/Hamlyn/rectified01/image01_50' #whatever dataset
+DATA_TYPE : 'folder' #folder, video
+#--------Scheme------
+SELECT_SCHEME: 
+- 'quality' #color-r, feature, quality
+
+#--------Color-------
+R_THRESHOLD: 127
+#--------Quality-----
+Q_METHOD: 'hyperIQA'
+#--------Hyper-IQA---
+IQA_THRESHOLD: 40
+
+#--------Visual------
+IF_MUTE: True
+  
+
