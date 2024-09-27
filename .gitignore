@@ -2,3 +2,4 @@ rectified01/
 __pycache__/
 *.pkl
 *.swp
+venv/

@@ -5,6 +5,7 @@ DATA_TYPE : 'folder' #folder, video
 SELECT_SCHEME: 
 - 'quality' #color-r, feature, quality
 
+DEPTH_SCHEME: 'depth-anything' #should only be one value and here it is 
 #--------Color-------
 R_THRESHOLD: 127
 #--------Quality-----

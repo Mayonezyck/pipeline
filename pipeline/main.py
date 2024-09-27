@@ -135,6 +135,10 @@ the valid depth map will be pulled from that folder depending on the
 FrameList.
 '''
 # Depth Estimation
+depth_method = config['DEPTH_SCHEME']
+
+# After picking the depth generating method, the framelist will be taken and it shall be sent as input for the depth estimation
+
 
 # 3D reconstruction
 
