@@ -6,3 +6,4 @@ venv/
 temp/
 output/
 Depth-Anything/
+pipeline/depthEstimate/Depth-Anything
