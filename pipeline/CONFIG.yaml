@@ -12,6 +12,10 @@ R_THRESHOLD: 127
 Q_METHOD: 'hyperIQA'
 #--------Hyper-IQA---
 IQA_THRESHOLD: 40
+#--------Depth Anything---
+DA_ENCODER: vitl
+PRED_ONLY: True
+GRAY_SCALE: True
 
 #--------Visual------
 IF_MUTE: True

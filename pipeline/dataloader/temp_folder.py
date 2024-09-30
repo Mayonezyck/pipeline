@@ -5,10 +5,18 @@ import shutil
 def create(content, mute = False):
     if __check_and_create_path__('temp'):
         __copy_in__(content, mute = mute)
+        return 'temp'
     else:
         raise TempExistError("Pipeline terminated because previous temp folder found. Consider manually remove the temp folder.")
-    
+        return None
 
+def clear():
+    if os.path.exists('temp'):
+        shutil.rmtree('temp')
+        print("Temp folder removed")
+    else:
+        print("Temp folder does not exist (for some reason)")
+        
 def __copy_in__(content, dest_folder = 'temp', mute = False):
     for file_path in content:
         if os.path.exists(file_path):
@@ -30,5 +38,6 @@ def __check_and_create_path__(path):
         print(f"Directory '{path}' already exists. Please check and consider if to proceed.")
         return False
     
+
 class TempExistError(Exception):
     pass

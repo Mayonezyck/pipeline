@@ -133,7 +133,7 @@ This serves several purposes:
 -some algorithms are more easily used when passing a folder. 
 '''
 # region CODE
-temp_folder.create(frameList, mute)
+temp_path = temp_folder.create(frameList, mute)
 # endregion
 # endregion
 # region Depth Estimation
@@ -154,11 +154,13 @@ depth_method = config['DEPTH_SCHEME']
 # taken and it shall be sent as input for the depth estimation
 if depth_method == 'depth-anything':
     op.block_line_output('Depth-anything is the chosen depth prediction method.')
-    #depth.estimate(depth_method,temp_folder)
+    depth_anything_config = [config['DA_ENCODER'],config['PRED_ONLY'],config['GRAY_SCALE']]
+    depth.estimate(depth_method,temp_path,depth_anything_config, mute)
 
 
 # 3D reconstruction
 
-
+# Release Temp folder
+temp_folder.clear()
 
 op.end()
