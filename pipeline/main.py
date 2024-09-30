@@ -12,7 +12,8 @@ Instructor: Dr. Yangming Lee
 # region import
 import os
 import shutil
-from dataloader import yaml_handler, frame_handler
+from dataloader import yaml_handler, frame_handler, temp_folder
+from depthEstimate import estimate as depth
 from visualize import outputvisual as op
 # endregion
 
@@ -123,8 +124,18 @@ for method_i in range(len(selection_method)):
 
 # endregion
 # endregion
-
-
+op.block_line_output('---END OF FRAME SELECTION---')
+# region Temp Folder Creation
+'''
+A temporary folder is created to be the folder of chosen frames.
+This serves several purposes: 
+-keep track of which frames are chosen per iteration.
+-some algorithms are more easily used when passing a folder. 
+'''
+# region CODE
+temp_folder.create(frameList, mute)
+# endregion
+# endregion
 # region Depth Estimation
 '''
 Once we have the frames picked out, we are going foward and 
@@ -135,9 +146,15 @@ the valid depth map will be pulled from that folder depending on the
 FrameList.
 '''
 # Depth Estimation
+
 depth_method = config['DEPTH_SCHEME']
 
-# After picking the depth generating method, the framelist will be taken and it shall be sent as input for the depth estimation
+
+# After picking the depth generating method, the framelist will be 
+# taken and it shall be sent as input for the depth estimation
+if depth_method == 'depth-anything':
+    op.block_line_output('Depth-anything is the chosen depth prediction method.')
+    #depth.estimate(depth_method,temp_folder)
 
 
 # 3D reconstruction
