@@ -16,6 +16,14 @@ IQA_THRESHOLD: 40
 DA_ENCODER: vitl
 PRED_ONLY: True
 GRAY_SCALE: True
+#--------Reconstruction---
+fx:
+fy: 
+cx:
+cy:
+
+RECON_METHOD: 'ICP'
+
 
 #--------Visual------
 IF_MUTE: True

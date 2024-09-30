@@ -5,12 +5,14 @@ def estimate(method, path,config, ifmute):
     try:
         now = datetime.now()
         current_time = now.strftime("%Y%m%d%H%M%S")
+        output_path_raw = f'output/depth_anything_{current_time}_output'
         if method == 'depth-anything':
+            output_path = f"../../../{output_path_raw}"
             command = [
                 "python", "run.py", 
                 "--encoder", config[0], 
                 "--img-path", '../../../temp', 
-                "--outdir", f"../../../output/depth_anything_{current_time}_output", 
+                "--outdir", output_path, 
             ]
             if config[1]:
                 command.append('--pred-only')
@@ -23,7 +25,7 @@ def estimate(method, path,config, ifmute):
                 print("Errors:\n", result.stderr.decode('utf-8'))
             os.chdir('../../..')
             pass
-        return 
+        return output_path_raw
     except FileNotFoundError:
          print(f"The directory {path} does not exist.")
          return 
