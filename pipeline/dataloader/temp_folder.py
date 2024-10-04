@@ -10,6 +10,14 @@ def create(content, mute = False):
         raise TempExistError("Pipeline terminated because previous temp folder found. Consider manually remove the temp folder.")
         return None
 
+def clear_and_load_folder(path, mute = False):
+    clear()
+    if os.path.exists(path):
+        shutil.copytree(path, 'temp')
+        print(f"Temp folder loaded with {path}")
+    else:
+        print("Temp folder does not exist (for some reason)")
+
 def clear():
     if os.path.exists('temp'):
         shutil.rmtree('temp')
@@ -17,6 +25,8 @@ def clear():
     else:
         print("Temp folder does not exist (for some reason)")
         
+
+
 def __copy_in__(content, dest_folder = 'temp', mute = False):
     for file_path in content:
         if os.path.exists(file_path):

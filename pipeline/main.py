@@ -10,10 +10,9 @@ RoCAL
 Instructor: Dr. Yangming Lee
 '''
 # region import
-import os
-import shutil
 from dataloader import yaml_handler, frame_handler, temp_folder
 from depthEstimate import estimate as depth
+from reconstruction import reconstruct as threed
 from visualize import outputvisual as op
 # endregion
 
@@ -156,12 +155,31 @@ if depth_method == 'depth-anything':
     depth_anything_config = [config['DA_ENCODER'],config['PRED_ONLY'],config['GRAY_SCALE']]
     output_folder = depth.estimate(depth_method,temp_path,depth_anything_config, mute)
     op.block_line_output(f'Depth Estimation using {depth_method} can be found in {output_folder}')
+
 # endregion
 # endregion
 
+# Load temp folder for recon
+temp_folder.clear_and_load_folder(output_folder)
 
-# 3D reconstruction
 
+
+# region 3D reconstruction
+'''
+After having the depth maps retracted from each image, now register them onto one single pointcloud
+Depth map shall be absolute depths and each of them shall be contributing to the final result
+'''
+ 
+
+# region CODE
+ply_path = threed.recon(config)
+if ply_path is not None:
+    recon_method = config['RECON_METHOD']
+    op.block_line_output(f'Reconstruction using {recon_method} is complete and the point cloud is stored in {ply_path}')
+else:
+    op.block_line_output('Reconstruction went wrong. Read Error')
+# endregion
+# endregion
 # Release Temp folder
 temp_folder.clear()
 

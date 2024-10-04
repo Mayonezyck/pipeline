@@ -17,13 +17,17 @@ DA_ENCODER: vitl
 PRED_ONLY: True
 GRAY_SCALE: True
 #--------Reconstruction---
-fx:
+RECON_METHOD: 'ICP'
+DEPTH_FOLDER: 'temp' #default to be using temp
+USE_GPU: True
+fx: 383.1901395
 fy: 
 cx:
 cy:
+SMALL_POINT_THRESHOLD: 0.01
+ICP_MAX_ITERATION: 200
 
-RECON_METHOD: 'ICP'
 
 
 #--------Visual------
-IF_MUTE: True
+IF_MUTE: False

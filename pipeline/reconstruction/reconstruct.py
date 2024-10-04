@@ -1,10 +1,7 @@
-import torch
-import numpy as np
-import cv2
-
-def recon():
-    pass
-
-def downsample():
-    #since the point cloud will grow into a gigantic one, down sampling is necessary
-    
+from reconstruction import icp_recon
+def recon(config):
+    pointcloud = None
+    if config['RECON_METHOD'] == 'ICP':
+        print('Reconstructing using ICP alignment.')
+        pointcloud = icp_recon.recon(config)
+    return pointcloud
