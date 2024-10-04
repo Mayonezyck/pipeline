@@ -150,12 +150,9 @@ depth_method = config['DEPTH_SCHEME']
 
 # After picking the depth generating method, the framelist will be 
 # taken and it shall be sent as input for the depth estimation
-if depth_method == 'depth-anything':
-    op.block_line_output('Depth-anything is the chosen depth prediction method.')
-    depth_anything_config = [config['DA_ENCODER'],config['PRED_ONLY'],config['GRAY_SCALE']]
-    output_folder = depth.estimate(depth_method,temp_path,depth_anything_config, mute)
-    op.block_line_output(f'Depth Estimation using {depth_method} can be found in {output_folder}')
-
+op.block_line_output(f'{depth_method}is the chosen depth prediction method.')
+output_folder = depth.estimate(depth_method,temp_path,config, mute)
+op.block_line_output(f'Depth Estimation using {depth_method} can be found in {output_folder}')
 # endregion
 # endregion
 

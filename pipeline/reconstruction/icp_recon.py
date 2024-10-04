@@ -24,7 +24,8 @@ def recon(config):
         depth_map = cv2.imread(file_path, cv2.IMREAD_UNCHANGED)    
         depth_map = depth_map.astype(np.float32)
         #print(depth_map.shape)
-        depth_map = cv2.cvtColor(depth_map, cv2.COLOR_BGR2GRAY)
+        if len(depth_map.shape) != 2:
+            depth_map = cv2.cvtColor(depth_map, cv2.COLOR_BGR2GRAY)
         #print(depth_map.shape)
         current_pc = depth_map_to_point_cloud(depth_map, config['fx']) #assume same of fx fy
         min_threshold = config['SMALL_POINT_THRESHOLD'] # Set a threshold for the minimum z-value (depth)

@@ -5,7 +5,7 @@ DATA_TYPE : 'folder' #folder, video
 SELECT_SCHEME: 
 - 'quality' #color-r, feature, quality
 
-DEPTH_SCHEME: 'depth-anything' #should only be one value and here it is 
+DEPTH_SCHEME: 'endo-depth' #depth-anything|endo-depth
 #--------Color-------
 R_THRESHOLD: 127
 #--------Quality-----
@@ -16,6 +16,8 @@ IQA_THRESHOLD: 40
 DA_ENCODER: vitl
 PRED_ONLY: True
 GRAY_SCALE: True
+#--------Endo Depth---
+ED_MODEL: 'epoch8'
 #--------Reconstruction---
 RECON_METHOD: 'ICP'
 DEPTH_FOLDER: 'temp' #default to be using temp
