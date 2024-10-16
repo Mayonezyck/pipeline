@@ -14,6 +14,8 @@ from dataloader import yaml_handler, frame_handler, temp_folder
 from depthEstimate import estimate as depth
 from reconstruction import reconstruct as threed
 from visualize import outputvisual as op
+from evaluation import evaluate
+import os
 # endregion
 
 # region Configure Reading
@@ -112,18 +114,22 @@ for method_i in range(len(selection_method)):
             # Once we have the selection score, apply thresholding to choose the 
             # qualified frames from the framelist
             frameList = frame_handler.pickFrameList(frameList, selection_score,IQA_threshold)
+            # TODO: add an output of framelist at the end of each method
             op.block_line_output('Hyper IQA applied and frameList have been updated.')
             method = None
-    elif current_method == 'color-r':
-        op.block_line_output('Color-Red is chosen but not implemented yet.')
+    elif current_method == 'rchannel':
+        op.block_line_output('Color-Red is chosen.')
+        from frameSelect.rchannel import rchannel
+        # Use the method and get a list of scores
+        frameList = rchannel.rchannel(frameList, config)
     elif current_method == 'feature':
         op.block_line_output('Feature-based selection is chosen but not implemented yet.')
     else:
         op.block_line_output('No valid frame selection method is chosen.')
-
 # endregion
 # endregion
 op.block_line_output('---END OF FRAME SELECTION---')
+
 # region Temp Folder Creation
 '''
 A temporary folder is created to be the folder of chosen frames.
@@ -159,7 +165,18 @@ op.block_line_output(f'Depth Estimation using {depth_method} can be found in {ou
 # Load temp folder for recon
 temp_folder.clear_and_load_folder(output_folder)
 
+# Evaluate the temp folder with the corresponding depth maps
+# region Evaluation
+# Store evaluation results in a YAML file
+evaluation_results = evaluate.evaluate_depth_maps(output_folder, config['GT_PATH'])
 
+# Define the output path for the evaluation results
+evaluation_output_path = os.path.join(output_folder,'evaluation_results.yaml')
+
+# Save the evaluation results to the YAML file
+yaml_handler.save_yaml(evaluation_output_path, evaluation_results)
+
+op.block_line_output(f'Evaluation results have been saved to {evaluation_output_path}')
 
 # region 3D reconstruction
 '''

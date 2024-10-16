@@ -1,4 +1,5 @@
 import yaml
+import numpy as np
 
 def load_yaml(file_path):
     try:
@@ -10,3 +11,11 @@ def load_yaml(file_path):
     except yaml.YAMLError as error:
         print(f'Having problem loading the YAML file: {error}')
 
+def save_yaml(file_path, data):
+    try:
+        print(data)
+        with open(file_path, 'w') as file:
+            for item in data:
+                file.write(f'{item}\n')
+    except yaml.YAMLError as error:
+        print(f'Having problem saving the YAML file: {error}')

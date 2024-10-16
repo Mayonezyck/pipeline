@@ -1,13 +1,15 @@
 #--------Data--------
 DATA_PATH : 'data/Hamlyn/rectified01/image01_50' #whatever dataset
 DATA_TYPE : 'folder' #folder, video
+#--------GT----------
+GT_PATH : 'data/Hamlyn/rectified01/depth01' #whatever dataset
 #--------Scheme------
 SELECT_SCHEME: 
-- 'quality' #color-r, feature, quality
+- 'rchannel' #rchannel, feature, quality
 
 DEPTH_SCHEME: 'endo-depth' #depth-anything|endo-depth
 #--------Color-------
-R_THRESHOLD: 127
+RC_THRESHOLD: 127
 #--------Quality-----
 Q_METHOD: 'hyperIQA'
 #--------Hyper-IQA---
