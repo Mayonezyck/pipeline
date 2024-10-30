@@ -99,37 +99,37 @@ Some frames clearly should be picked out:
 # Load method selection
 selection_method = config['SELECT_SCHEME']
 method = None
-
-for method_i in range(len(selection_method)):
-    current_method = selection_method[method_i]
-    if current_method == 'quality':
-        q_method = config['Q_METHOD']
-        if q_method == 'hyperIQA':
-            from frameSelect.hyperIQA import hyperIQA
-            method = hyperIQA.hyperIQA()        
+if selection_method is not None:
+    for method_i in range(len(selection_method)):
+        current_method = selection_method[method_i]
+        if current_method == 'quality':
+            q_method = config['Q_METHOD']
+            if q_method == 'hyperIQA':
+                from frameSelect.hyperIQA import hyperIQA
+                method = hyperIQA.hyperIQA()        
+                # Use the method and get a list of scores
+                selection_score = method.predict_list(frameList, mute = mute)
+                IQA_threshold = config['IQA_THRESHOLD']
+                
+                # Once we have the selection score, apply thresholding to choose the 
+                # qualified frames from the framelist
+                frameList = frame_handler.pickFrameList(frameList, selection_score,IQA_threshold)
+                # TODO: add an output of framelist at the end of each method
+                op.block_line_output('Hyper IQA applied and frameList have been updated.')
+                method = None
+        elif current_method == 'rchannel':
+            op.block_line_output('Color-Red is chosen.')
+            from frameSelect.rchannel import rchannel
             # Use the method and get a list of scores
-            selection_score = method.predict_list(frameList, mute = mute)
-            IQA_threshold = config['IQA_THRESHOLD']
-            
-            # Once we have the selection score, apply thresholding to choose the 
-            # qualified frames from the framelist
-            frameList = frame_handler.pickFrameList(frameList, selection_score,IQA_threshold)
-            # TODO: add an output of framelist at the end of each method
-            op.block_line_output('Hyper IQA applied and frameList have been updated.')
-            method = None
-    elif current_method == 'rchannel':
-        op.block_line_output('Color-Red is chosen.')
-        from frameSelect.rchannel import rchannel
-        # Use the method and get a list of scores
-        frameList = rchannel.rchannel(frameList, config)
-    elif current_method == 'feature':
-        op.block_line_output('Feature-based selection is chosen but not implemented yet.')
-    else:
-        op.block_line_output('No valid frame selection method is chosen.')
+            frameList = rchannel.rchannel(frameList, config)
+        elif current_method == 'feature':
+            op.block_line_output('Feature-based selection is chosen but not implemented yet.')
+        else:
+            op.block_line_output('No valid frame selection method is chosen.')
 # endregion
 # endregion
 op.block_line_output('---END OF FRAME SELECTION---')
-
+op.block_line_output(frameList)
 # region Temp Folder Creation
 '''
 A temporary folder is created to be the folder of chosen frames.

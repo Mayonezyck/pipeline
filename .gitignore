@@ -8,3 +8,7 @@ output/
 Depth-Anything/
 pipeline/depthEstimate/Depth-Anything
 **/*.ply
+data/
+test_npy_eval/
+test_jpg_eval/
+test_visible_npy_eval/

@@ -5,9 +5,9 @@ DATA_TYPE : 'folder' #folder, video
 GT_PATH : 'data/Hamlyn/rectified01/depth01' #whatever dataset
 #--------Scheme------
 SELECT_SCHEME: 
-- 'rchannel' #rchannel, feature, quality
+#rchannel, feature, quality
 
-DEPTH_SCHEME: 'endo-depth' #depth-anything|endo-depth
+DEPTH_SCHEME: 'depth-anything:v2' #depth-anything|endo-depth|depth-anything:v2
 #--------Color-------
 RC_THRESHOLD: 127
 #--------Quality-----

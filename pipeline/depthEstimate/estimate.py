@@ -25,6 +25,25 @@ def estimate(method, path,config, ifmute):
                 print("Output:\n", result.stdout.decode('utf-8'))
                 print("Errors:\n", result.stderr.decode('utf-8'))
             os.chdir('../../..')
+        elif method == 'depth-anything:v2':
+            print("Depth-Anything-v2 HERE")
+            output_path = f"../../../{output_path_raw}"
+            command = [
+                "python", "run.py", 
+                "--encoder", config['DA_ENCODER'], 
+                "--img-path", '../../../temp', 
+                "--outdir", output_path, 
+            ]
+            if config['PRED_ONLY']:
+                command.append('--pred-only')
+            if config['GRAY_SCALE']:
+                command.append('--grayscale')
+            os.chdir('pipeline/depthEstimate/Depth-Anything-V2')
+            result = subprocess.run(command, stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+            if not ifmute:
+                print("Output:\n", result.stdout.decode('utf-8'))
+                print("Errors:\n", result.stderr.decode('utf-8'))
+            os.chdir('../../..')
         elif method == 'endo-depth':
             output_path = f"../../../{output_path_raw}"
             
