@@ -95,7 +95,7 @@ def evaluate_depth_maps(pred_folder='temp', gt_folder='/path/to/gt'):
         if pred_file.endswith('.png'):
             pred_image = 255 - pred_image #post processing for depth-anything v2 outpu
         # Ensure images are 2D arrays
-        print(f'{pred_file} shape: {pred_image.shape}')
+        #print(f'{pred_file} shape: {pred_image.shape}')
         if pred_image.ndim == 3 and pred_image.shape[2] == 3:
             pred_image = cv2.cvtColor(pred_image, cv2.COLOR_BGR2GRAY)
         if gt_image.ndim == 3 and gt_image.shape[2] == 3:
@@ -103,8 +103,8 @@ def evaluate_depth_maps(pred_folder='temp', gt_folder='/path/to/gt'):
 
         pred_image = pred_image.astype(np.float32)
         gt_image = gt_image.astype(np.float32)
-        print(f'{pred_file} shape: {pred_image.shape}')
-        print(f'{gt_file} shape: {gt_image.shape}')
+        #print(f'{pred_file} shape: {pred_image.shape}')
+        #print(f'{gt_file} shape: {gt_image.shape}')
 
         pred_image = np.squeeze(pred_image)
         gt_image = np.squeeze(gt_image)

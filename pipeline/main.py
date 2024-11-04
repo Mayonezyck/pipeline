@@ -15,6 +15,7 @@ from depthEstimate import estimate as depth
 from reconstruction import reconstruct as threed
 from visualize import outputvisual as op
 from evaluation import evaluate
+from postProcessing import postprocess
 import os
 # endregion
 
@@ -165,6 +166,21 @@ op.block_line_output(f'Depth Estimation using {depth_method} can be found in {ou
 # Load temp folder for recon
 temp_folder.clear_and_load_folder(output_folder)
 
+# PostProcessing
+'''
+Postprocessing is a step that is necessary for some depth estimation methods.
+The depth map can be noisy and have some artifacts.
+Meanwhile, the depth map can be in disparity form and need to be converted to depth.
+'''
+# region CODE
+# Load the postprocessing method
+# 
+op.block_line_output('Postprocessing.')
+output_folder = postprocess.postprocess(output_folder, config)
+# endregion
+
+temp_folder.clear_and_load_folder(output_folder)
+
 # Evaluate the temp folder with the corresponding depth maps
 # region Evaluation
 # Store evaluation results in a YAML file
@@ -186,15 +202,17 @@ Depth map shall be absolute depths and each of them shall be contributing to the
  
 
 # region CODE
-ply_path = threed.recon(config)
-if ply_path is not None:
-    recon_method = config['RECON_METHOD']
-    op.block_line_output(f'Reconstruction using {recon_method} is complete and the point cloud is stored in {ply_path}')
-else:
-    op.block_line_output('Reconstruction went wrong. Read Error')
-# endregion
-# endregion
-# Release Temp folder
+# Recon process can also be skipped and temp will be cleared 
+if not config['SKIP_RECON']:
+    ply_path = threed.recon(config)
+    if ply_path is not None:
+        recon_method = config['RECON_METHOD']
+        op.block_line_output(f'Reconstruction using {recon_method} is complete and the point cloud is stored in {ply_path}')
+    else:
+        op.block_line_output('Reconstruction went wrong. Read Error')
+    # endregion
+    # endregion
+    # Release Temp folder
 temp_folder.clear()
 
 op.end()

@@ -61,9 +61,31 @@ def estimate(method, path,config, ifmute):
                 print("Output:\n", result.stdout.decode('utf-8'))
                 print("Errors:\n", result.stderr.decode('utf-8'))
             os.chdir('../../..')
+        elif method == 'endo-dac':
+            output_path = f"../../../{output_path_raw}"
+            print("Endo-DAC HERE")
+            modelchoice = config['EDAC_MODEL']
+            command = []
+            #if config['EDAC_GPU']:
+                #command.append("CUDA_VISIBLE_DEVICES=0")
+            command.extend(['python', 'test_simple.py','--image_path',
+                             '../../../temp', '--ext','jpg','--model_path', 
+                             modelchoice, 
+                             '--output_path', output_path])
+            os.chdir('pipeline/depthEstimate/EndoDAC')
+            temp_folder.__check_and_create_path__(output_path)
+            print(command)
+            result = subprocess.run(command, stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+            if not ifmute:
+                print("Output:\n", result.stdout.decode('utf-8'))
+                print("Errors:\n", result.stderr.decode('utf-8'))
+            os.chdir('../../..')
         return output_path_raw
-    except FileNotFoundError:
+        
+    
+    except FileNotFoundError as e :
          print(f"The directory {path} does not exist.")
+         print(f"An error occurred: {e}")
          return 
     except Exception as e:
         print(f"An error occurred: {e}")
