@@ -1,8 +1,8 @@
 #--------Data--------
-DATA_PATH : 'data/Hamlyn/rectified17/image01_last45' #whatever dataset
+DATA_PATH : 'data/Hamlyn/rectified17/image01_last45' #DATA_PATH : 'data/Hamlyn/rectified17/image01_900_1200' #whatever dataset
 DATA_TYPE : 'folder' #folder, video
 #--------GT----------
-GT_PATH : 'data/Hamlyn/rectified17/depth01' #whatever dataset
+GT_PATH : #'data/Hamlyn/rectified17/depth01' #whatever dataset
 #--------Scheme------
 SELECT_SCHEME: 
 #rchannel, feature, quality
@@ -25,14 +25,15 @@ EDAC_GPU: True
 EDAC_MODEL: './EndoDAC_fullmodel'
 #--------Reconstruction---
 SKIP_RECON: False
-RECON_METHOD: 'ICP'
+RECON_METHOD: 'ICP' #ICP_Neighbor|ICP
 DEPTH_FOLDER: 'temp' #default to be using temp
 USE_GPU: True
 NEED_REVERSE: True
-fx: 383.1901395
+fx: 417.9036255 #| #383.1901395
 fy: 
-cx: 0.51
+cx: 
 cy:
+t1: 5.1
 SMALL_POINT_THRESHOLD: 0.01
 ICP_MAX_ITERATION: 200
 

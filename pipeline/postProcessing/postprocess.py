@@ -9,22 +9,36 @@ def postprocess(output_folder, config):
     output_path_raw = output_folder
     if config['DEPTH_SCHEME'] == 'endo-dac':
         output_path_raw = f'{output_folder}_{current_time}_postprocessed'
+        input_path = config['DATA_PATH']
+        # Get a picture from input_path and read its original height and width
+        sample_image_path = None
+        for file in os.listdir(input_path):
+            if file.endswith(('.png', '.jpg', '.jpeg')):
+                sample_image_path = os.path.join(input_path, file)
+                break
         
+        if sample_image_path is None:
+            raise FileNotFoundError("No image file found in the input path.")
+        
+        with Image.open(sample_image_path) as img:
+            original_width, original_height = img.size
         # Create the output directory if it doesn't exist
         os.makedirs(output_path_raw, exist_ok=True)
         
         fx = config['fx']
-        cx = config['cx']
+        baseline = config['t1']
         
         for filename in os.listdir(output_folder):
             if filename.endswith('_disp.npy'):
                 disp_path = os.path.join(output_folder, filename)
                 disp = np.load(disp_path)
-                
+
                 # Remove singleton dimensions from disp
                 disp = np.squeeze(disp)
-                
-                depth = fx * cx / disp
+                                
+                # Resize disp to original height and width
+                disp = np.array(Image.fromarray(disp).resize((original_width, original_height), Image.BILINEAR))
+                depth = fx * baseline / disp
                 
                 # Normalize depth and remove singleton dimensions
                 depth_normalized = (depth - np.min(depth)) / (np.max(depth) - np.min(depth)) * 255

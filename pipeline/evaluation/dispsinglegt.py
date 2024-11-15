@@ -4,7 +4,7 @@ import numpy as np
 import matplotlib as mpl
 import matplotlib.cm as cm
 # Load the depth map
-depth_map = cv2.imread('/home/yicheng/Github/pipeline/output/endo-dac_20241104124543_output_20241104124547_postprocessed/0000005551_combined.png', cv2.IMREAD_UNCHANGED)
+depth_map = cv2.imread('/home/yicheng/Github/pipeline/data/Hamlyn/rectified17/depth01_10/0000000000.png', cv2.IMREAD_UNCHANGED)
 # Load the image
 # image = cv2.imread('0000000000.png')
 

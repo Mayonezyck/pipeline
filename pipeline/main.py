@@ -16,6 +16,7 @@ from reconstruction import reconstruct as threed
 from visualize import outputvisual as op
 from evaluation import evaluate
 from postProcessing import postprocess
+import shutil
 import os
 # endregion
 
@@ -121,6 +122,7 @@ if selection_method is not None:
         elif current_method == 'rchannel':
             op.block_line_output('Color-Red is chosen.')
             from frameSelect.rchannel import rchannel
+            
             # Use the method and get a list of scores
             frameList = rchannel.rchannel(frameList, config)
         elif current_method == 'feature':
@@ -184,15 +186,16 @@ temp_folder.clear_and_load_folder(output_folder)
 # Evaluate the temp folder with the corresponding depth maps
 # region Evaluation
 # Store evaluation results in a YAML file
-evaluation_results = evaluate.evaluate_depth_maps(output_folder, config['GT_PATH'])
+if config['GT_PATH'] is not None:
+    evaluation_results = evaluate.evaluate_depth_maps(output_folder, config['GT_PATH'])
 
-# Define the output path for the evaluation results
-evaluation_output_path = os.path.join(output_folder,'evaluation_results.yaml')
+    # Define the output path for the evaluation results
+    evaluation_output_path = os.path.join(output_folder,'evaluation_results.yaml')
 
-# Save the evaluation results to the YAML file
-yaml_handler.save_yaml(evaluation_output_path, evaluation_results)
+    # Save the evaluation results to the YAML file
+    yaml_handler.save_yaml(evaluation_output_path, evaluation_results)
 
-op.block_line_output(f'Evaluation results have been saved to {evaluation_output_path}')
+    op.block_line_output(f'Evaluation results have been saved to {evaluation_output_path}')
 
 # region 3D reconstruction
 '''
@@ -208,6 +211,9 @@ if not config['SKIP_RECON']:
     if ply_path is not None:
         recon_method = config['RECON_METHOD']
         op.block_line_output(f'Reconstruction using {recon_method} is complete and the point cloud is stored in {ply_path}')
+        # Move the ply_path file to the output_folder
+        shutil.copy(ply_path, output_folder)
+        op.block_line_output(f'Point cloud file has been moved to {output_folder}')
     else:
         op.block_line_output('Reconstruction went wrong. Read Error')
     # endregion
