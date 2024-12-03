@@ -1,5 +1,5 @@
 #--------Data--------
-DATA_PATH : 'data/Hamlyn/rectified17/image01_last45' #DATA_PATH : 'data/Hamlyn/rectified17/image01_900_1200' #whatever dataset
+DATA_PATH : 'data/Hamlyn/test22/color' #DATA_PATH : 'data/Hamlyn/rectified17/image01_900_1200' #whatever dataset
 DATA_TYPE : 'folder' #folder, video
 #--------GT----------
 GT_PATH : #'data/Hamlyn/rectified17/depth01' #whatever dataset
@@ -25,7 +25,7 @@ EDAC_GPU: True
 EDAC_MODEL: './EndoDAC_fullmodel'
 #--------Reconstruction---
 SKIP_RECON: False
-RECON_METHOD: 'ICP' #ICP_Neighbor|ICP
+RECON_METHOD: 'ICP_Neighbor' #ICP_Neighbor|ICP
 DEPTH_FOLDER: 'temp' #default to be using temp
 USE_GPU: True
 NEED_REVERSE: True
@@ -36,7 +36,7 @@ cy:
 t1: 5.1
 SMALL_POINT_THRESHOLD: 0.01
 ICP_MAX_ITERATION: 200
-
+ERROR_TOLERANCE: 5
 
 
 #--------Visual------

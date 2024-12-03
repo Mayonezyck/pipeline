@@ -111,7 +111,8 @@ def register_depth_map_to_pointcloud_new(depth_map_path, device, need_reverse, f
 
     # Create a PyTorch3D Pointclouds object with colors
     point_cloud = Pointclouds(points=[points], features=[colors])
-
+    # Print the value of the first point of the point cloud
+    print(f"First point: {points[0]}")
     return point_cloud
 
 def icp(A, B, max_iterations=20, tolerance=1e-5):
@@ -373,7 +374,7 @@ def icp_ransac(A, B, max_iterations=20, tolerance=1e-5, ransac_iterations=100, i
     return aligned_B
 
 def icp_with_overlap_filtering(
-    A, B, max_iterations=20, tolerance=1e-5, distance_threshold=10
+    A, B, max_iterations=40, tolerance=1e-5, initial_distance_threshold=10, final_distance_threshold=0.5, visualize = False
 ):
     """
     Perform ICP algorithm to align point cloud B to point cloud A with filtering of non-overlapping regions.
@@ -383,7 +384,8 @@ def icp_with_overlap_filtering(
         B (Pointclouds): The source point cloud to be aligned.
         max_iterations (int): Maximum number of iterations.
         tolerance (float): Convergence tolerance.
-        distance_threshold (float): Threshold to filter out non-overlapping regions.
+        initial_distance_threshold (float): Initial threshold to filter out non-overlapping regions.
+        final_distance_threshold (float): Final threshold value for the last iteration.
 
     Returns:
         Pointclouds: The aligned source point cloud with features (colors).
@@ -400,6 +402,9 @@ def icp_with_overlap_filtering(
     T = np.eye(4)
     errors_over_time = []
 
+    # Initialize distance threshold
+    distance_threshold = initial_distance_threshold
+
     for i in range(max_iterations):
         print(f"Iteration {i+1}/{max_iterations}")
 
@@ -410,7 +415,27 @@ def icp_with_overlap_filtering(
         distances, indices = tree.query(B_points)
         closest_points = A_points[indices]
 
-        # Filter out correspondences with distances greater than threshold
+        # Adjust the distance threshold dynamically
+        mean_distance = np.mean(distances)
+        median_distance = np.median(distances)
+        percentile_90 = np.percentile(distances, 90)
+
+        # Option 1: Based on mean distance
+        # distance_threshold = mean_distance * 1.5
+
+        # Option 2: Based on median distance
+        # distance_threshold = median_distance * 2.0
+
+        # Option 3: Based on a specific percentile
+        distance_threshold = percentile_90
+
+        # Optionally, decrease the threshold over iterations
+        alpha = i / (max_iterations - 1)
+        distance_threshold = (1 - alpha) * initial_distance_threshold + alpha * final_distance_threshold
+
+        print(f"Adaptive distance threshold: {distance_threshold}")
+
+        # Filter out correspondences with distances greater than the threshold
         mask = distances < distance_threshold
         filtered_B_points = B_points[mask]
         filtered_closest_points = closest_points[mask]
@@ -472,9 +497,13 @@ def icp_with_overlap_filtering(
         prev_error = mean_error
 
         # Visualize the point clouds with the specified colors
-        visualize_alignment(
-           A_points, B_points, mask, iteration=i, save_visualization=False
-        )
+        if visualize:
+            visualize_alignment(
+                A_points, B_points, mask, iteration=i, save_visualization=False
+            )
+        # visualize_alignment(
+        #    A_points, B_points, mask, iteration=i, save_visualization=False
+        # )
 
     # Convert back to tensors and create aligned point cloud with features
     B_points_tensor = torch.from_numpy(B_points).float().to(B.device)
@@ -485,7 +514,6 @@ def icp_with_overlap_filtering(
     save_error_plot(errors_over_time)
 
     return aligned_B
-
 
 def icp_open3d(A, B, max_iterations=20, tolerance=1e-5):
     """
@@ -948,8 +976,12 @@ def recon(config):
         else:
             new_pointcloud = register_depth_map_to_pointcloud_new(file_path, device, need_reverse=config['NEED_REVERSE'], focal_length=config['fx'],texture_folder=config['DATA_PATH'],universal_mask=universal_mask)   
             # Step 1: Align B to A using ICP
-            aligned_B = icp_open3d(worldmap, new_pointcloud)
+            
+            if counter >=28:
+                aligned_B = icp_with_overlap_filtering(worldmap, new_pointcloud, visualize=True)
             #worldmap = merge_point_clouds(worldmap, aligned_B)
+            else:
+                aligned_B = icp_with_overlap_filtering(worldmap, new_pointcloud)
             analyze_point_cloud_distances(worldmap, aligned_B)
             distances = analyze_point_cloud_distances(worldmap, aligned_B)
             global_distances.append(distances)
@@ -962,10 +994,12 @@ def recon(config):
 
             # B_points = aligned_B.points_padded()     # Shape: (1, M, 3)
             # B_features = aligned_B.features_padded() # Shape: (1, M, C)
-            if counter%30 == 0:
+            if counter%10 == 0:
                 print(f'Counter: {counter}')
+                visualize_pointcloud_with_texture(worldmap)
                 output_ply(worldmap)
             counter += 1
+            
             # # Step 3: Concatenate the points and features 
             # merged_points = torch.cat([A_points, B_points], dim=1)       # Shape: (1, N+M, 3)
             # merged_features = torch.cat([A_features, B_features], dim=1) # Shape: (1, N+M, C)
@@ -974,8 +1008,8 @@ def recon(config):
             # worldmap = Pointclouds(points=merged_points, features=merged_features)
 
             #worldmap = icp(worldmap, new_pointcloud)
-        visualize_pointcloud_with_texture(worldmap)
-        print(global_distances)
+    visualize_pointcloud_with_texture(worldmap)
+    print(global_distances)
     return output_ply(worldmap)
     # return output_ply(worldmap)
     # visualize_pointcloud_open3d(worldmap)
@@ -989,4 +1023,5 @@ def recon(config):
 #recon({'IF_MUTE': False, 'DATA_PATH' : 'data/Hamlyn/rectified01/image01', 'DEPTH_FOLDER': '/home/yicheng/Github/pipeline/output/depth-anything:v2_20241108120532_output','NEED_REVERSE':True, 'USE_GPU': True, 'fx':383.1901395})
 #recon({'IF_MUTE': False, 'DATA_PATH' : 'data/Hamlyn/rectified08/image01', 'DEPTH_FOLDER': '/home/yicheng/Github/pipeline/data/Hamlyn/rectified08/depth01_63','NEED_REVERSE':False, 'USE_GPU': True, 'fx':765.8236885})
 #recon({'IF_MUTE': False, 'DATA_PATH' : 'data/Hamlyn/rectified08/image01', 'DEPTH_FOLDER': '/home/yicheng/Github/pipeline/data/Hamlyn/rectified08/depth01_picked','NEED_REVERSE':False, 'USE_GPU': True, 'fx':765.8236885})
-recon({'IF_MUTE': False, 'DATA_PATH' : 'data/Hamlyn/rectified22/image', 'DEPTH_FOLDER': '/home/yicheng/Github/pipeline/data/Hamlyn/rectified22/depth','NEED_REVERSE':False, 'USE_GPU': True, 'fx':417.903625})
+#recon({'IF_MUTE': False, 'DATA_PATH' : 'data/Hamlyn/rectified22/image', 'DEPTH_FOLDER': '/home/yicheng/Github/pipeline/data/Hamlyn/rectified22/depth','NEED_REVERSE':False, 'USE_GPU': True, 'fx':417.903625})
+#recon({'IF_MUTE': False, 'DATA_PATH' : 'data/Hamlyn/test22/color', 'DEPTH_FOLDER': '/home/yicheng/Github/pipeline/data/Hamlyn/test22/depth','NEED_REVERSE':False, 'USE_GPU': True, 'fx':417.903625})
