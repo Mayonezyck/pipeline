@@ -1103,7 +1103,7 @@ def recon(config, universal_mask = None, depth_range = None):# TODO: the depth r
             if counter % 30 == 0:
                 print(f'Counter: {counter}')
                 output_ply(global_map)
-                visualize_pointcloud_with_texture(global_map)
+                #visualize_pointcloud_with_texture(global_map)
             counter += 1
     visualize_pointcloud_with_texture(global_map)
     output_ply(global_map)
@@ -1122,111 +1122,111 @@ def recon(config, universal_mask = None, depth_range = None):# TODO: the depth r
 #     #recon({'IF_MUTE': False, 'DATA_PATH' : 'data/Hamlyn/rectified01/image01', 'DEPTH_FOLDER': '/home/yicheng/Github/pipeline/output/depth-anything:v2_20241108120532_output','NEED_REVERSE':True, 'USE_GPU': True, 'fx':383.1901395})
 #     recon({'IF_MUTE': False, 'DATA_PATH' : 'data/Hamlyn/test22/color', 'DEPTH_FOLDER': '/home/yicheng/Github/pipeline/data/Hamlyn/test22/depth','NEED_REVERSE':False, 'USE_GPU': True, 'fx':525, 'ERROR_TOLERANCE': 5})
     
-# if __name__ == "__main__":
-#     # Configurations for predictions and ground truths
-#     config_pred = {
-#         'IF_MUTE': False,
-#         'DATA_PATH': 'data/Hamlyn/rectified22/color',  # Adjust as necessary
-#         'DEPTH_FOLDER': 'data/Hamlyn/rectified22/depth_predict',  # Prediction folder
-#         'NEED_REVERSE': True,  # Predictions require reversing
-#         'USE_GPU': True,
-#         'fx': 417.9036255,
-#         'ERROR_TOLERANCE': 5,
-#         'SCALE_FOR_DEPTH': 1
-#     }
+if __name__ == "__main__":
+    # Configurations for predictions and ground truths
+    config_pred = {
+        'IF_MUTE': False,
+        'DATA_PATH': 'data/Hamlyn/rectified22/color',  # Adjust as necessary
+        'DEPTH_FOLDER': 'data/Hamlyn/rectified22/depth_predict',  # Prediction folder
+        'NEED_REVERSE': True,  # Predictions require reversing
+        'USE_GPU': True,
+        'fx': 417.9036255,
+        'ERROR_TOLERANCE': 5,
+        'SCALE_FOR_DEPTH': 1
+    }
 
-#     config_gt = {
-#         'IF_MUTE': False,
-#         'DATA_PATH': 'data/Hamlyn/rectified22/color',  # Adjust as necessary
-#         'DEPTH_FOLDER': 'data/Hamlyn/rectified22/depth',  # Ground truth folder
-#         'NEED_REVERSE': False,  # Ground truths do not require reversing
-#         'USE_GPU': True,
-#         'fx': 417.9036255,
-#         'ERROR_TOLERANCE': 5,
-#         'SCALE_FOR_DEPTH': 1
-#     }
+    config_gt = {
+        'IF_MUTE': False,
+        'DATA_PATH': 'data/Hamlyn/rectified22/color',  # Adjust as necessary
+        'DEPTH_FOLDER': 'data/Hamlyn/rectified22/depth',  # Ground truth folder
+        'NEED_REVERSE': False,  # Ground truths do not require reversing
+        'USE_GPU': True,
+        'fx': 417.9036255,
+        'ERROR_TOLERANCE': 5,
+        'SCALE_FOR_DEPTH': 1
+    }
 
 
-#     # Reconstruct ground truth depth maps
-#     gt_pointcloud, uni_mask= recon(config_gt)
-#     # Reconstruct predicted depth maps
-#     pred_pointcloud, _ = recon(config_pred, universal_mask= uni_mask)
+    # Reconstruct ground truth depth maps
+    gt_pointcloud, uni_mask= recon(config_gt)
+    # Reconstruct predicted depth maps
+    pred_pointcloud, _ = recon(config_pred, universal_mask= uni_mask)
 
    
 
-#     # Now align the predicted point cloud to the ground truth point cloud
-#     # Convert pointclouds to Open3D point clouds
-#     pred_pcd = pointclouds_to_open3d(pred_pointcloud)
-#     gt_pcd = pointclouds_to_open3d(gt_pointcloud)
+    # Now align the predicted point cloud to the ground truth point cloud
+    # Convert pointclouds to Open3D point clouds
+    pred_pcd = pointclouds_to_open3d(pred_pointcloud)
+    gt_pcd = pointclouds_to_open3d(gt_pointcloud)
 
-#     # Downsample the ground truth point cloud to match the predicted point count
-#     pred_point_count = len(pred_pcd.points)
-#     gt_pcd_downsampled = downsample_point_cloud_to_match(gt_pcd, pred_point_count)
+    # Downsample the ground truth point cloud to match the predicted point count
+    pred_point_count = len(pred_pcd.points)
+    #gt_pcd_downsampled = downsample_point_cloud_to_match(gt_pcd, pred_point_count)
 
-#     # Align the point clouds
-#     transformation, rmse = align_point_clouds_with_scaling(
-#         pred_pcd, gt_pcd_downsampled, threshold=255.0, max_iterations=50
-#     )
-
-#     # Apply the transformation to the predicted point cloud
-#     pred_pcd.transform(transformation)
-
-#     # Visualize the alignment with textures
-#     visualize_aligned_pointclouds(gt_pcd, pred_pcd)
-
-if __name__ == "__main__":
-    # Testing the alignment methods with synthetic data using existing functions
-
-    import numpy as np
-    import open3d as o3d
-
-    # Generate random point cloud A
-    N = 1000
-    A_points = np.random.uniform(-1, 1, (N, 3))
-
-    # Create scaling factor and noise
-    scale_factor = 1.5  # True scaling factor
-    noise_sigma = 0.01  # Noise standard deviation
-
-    # Generate point cloud B = A * scale + noise
-    noise = np.random.normal(0, noise_sigma, (N, 3))
-    B_points = A_points * scale_factor + noise
-
-    # Create Open3D point clouds
-    A_pcd = o3d.geometry.PointCloud()
-    A_pcd.points = o3d.utility.Vector3dVector(A_points)
-    A_pcd.paint_uniform_color([1, 0, 0])  # Red for ground truth
-
-    B_pcd = o3d.geometry.PointCloud()
-    B_pcd.points = o3d.utility.Vector3dVector(B_points)
-    B_pcd.paint_uniform_color([0, 1, 0])  # Green for prediction
-
-    # Use the existing align_point_clouds_with_scaling function
-    # This function should already be defined in your code
+    # Align the point clouds
     transformation, rmse = align_point_clouds_with_scaling(
-        B_pcd, A_pcd, threshold=999, max_iterations=50
+        pred_pcd, gt_pcd, threshold=255.0, max_iterations=50
     )
 
-    print("Recovered transformation:")
-    print(transformation)
-    print("RMSE:", rmse)
+    # Apply the transformation to the predicted point cloud
+    pred_pcd.transform(transformation)
 
-    # Extract scaling factor from the transformation matrix
-    R = transformation[:3, :3]
-    estimated_scale_inverse = np.cbrt(np.linalg.det(R))  # Since det(R) = (1/s)^3
-    estimated_scale = 1 / estimated_scale_inverse  # Recover the true scaling factor
-    print(f"Estimated scaling factor: {estimated_scale}")
-    print(f"True scaling factor: {scale_factor}")
+    # Visualize the alignment with textures
+    visualize_aligned_pointclouds(gt_pcd, pred_pcd)
 
-    # Normalize the rotation matrix to remove scaling
-    R_normalized = R / estimated_scale_inverse
-    transformation_normalized = np.identity(4)
-    transformation_normalized[:3, :3] = R_normalized
-    transformation_normalized[:3, 3] = transformation[:3, 3] / estimated_scale_inverse
+# if __name__ == "__main__":
+#     # Testing the alignment methods with synthetic data using existing functions
 
-    # Apply the transformation to B_pcd
-    B_pcd.transform(transformation)
+#     import numpy as np
+#     import open3d as o3d
 
-    # Visualize the alignment using your existing function
-    # The function visualize_aligned_pointclouds should already be defined
-    # visualize_aligned_pointclouds(A_pcd, B_pcd)
+#     # Generate random point cloud A
+#     N = 1000
+#     A_points = np.random.uniform(-1, 1, (N, 3))
+
+#     # Create scaling factor and noise
+#     scale_factor = 1.5  # True scaling factor
+#     noise_sigma = 0.01  # Noise standard deviation
+
+#     # Generate point cloud B = A * scale + noise
+#     noise = np.random.normal(0, noise_sigma, (N, 3))
+#     B_points = A_points * scale_factor + noise
+
+#     # Create Open3D point clouds
+#     A_pcd = o3d.geometry.PointCloud()
+#     A_pcd.points = o3d.utility.Vector3dVector(A_points)
+#     A_pcd.paint_uniform_color([1, 0, 0])  # Red for ground truth
+
+#     B_pcd = o3d.geometry.PointCloud()
+#     B_pcd.points = o3d.utility.Vector3dVector(B_points)
+#     B_pcd.paint_uniform_color([0, 1, 0])  # Green for prediction
+
+#     # Use the existing align_point_clouds_with_scaling function
+#     # This function should already be defined in your code
+#     transformation, rmse = align_point_clouds_with_scaling(
+#         B_pcd, A_pcd, threshold=999, max_iterations=50
+#     )
+
+#     print("Recovered transformation:")
+#     print(transformation)
+#     print("RMSE:", rmse)
+
+#     # Extract scaling factor from the transformation matrix
+#     R = transformation[:3, :3]
+#     estimated_scale_inverse = np.cbrt(np.linalg.det(R))  # Since det(R) = (1/s)^3
+#     estimated_scale = 1 / estimated_scale_inverse  # Recover the true scaling factor
+#     print(f"Estimated scaling factor: {estimated_scale}")
+#     print(f"True scaling factor: {scale_factor}")
+
+#     # Normalize the rotation matrix to remove scaling
+#     R_normalized = R / estimated_scale_inverse
+#     transformation_normalized = np.identity(4)
+#     transformation_normalized[:3, :3] = R_normalized
+#     transformation_normalized[:3, 3] = transformation[:3, 3] / estimated_scale_inverse
+
+#     # Apply the transformation to B_pcd
+#     B_pcd.transform(transformation)
+
+#     # Visualize the alignment using your existing function
+#     # The function visualize_aligned_pointclouds should already be defined
+#     # visualize_aligned_pointclouds(A_pcd, B_pcd)

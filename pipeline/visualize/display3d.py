@@ -15,7 +15,7 @@ def display_all_point_clouds_in_folder(folder_path):
                 display_point_cloud(file_path)
 
 if __name__ == "__main__":
-    file_path = "/home/yicheng/Github/pipeline/output/ICP_20241118140025.ply"
+    file_path = "output/ICP_20241220140646.ply"
     
    
     display_point_cloud(file_path) 

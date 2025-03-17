@@ -104,6 +104,7 @@ method = None
 if selection_method is not None:
     for method_i in range(len(selection_method)):
         current_method = selection_method[method_i]
+        print(f'Current method: {current_method}')
         if current_method == 'quality':
             q_method = config['Q_METHOD']
             if q_method == 'hyperIQA':
@@ -132,7 +133,7 @@ if selection_method is not None:
 # endregion
 # endregion
 op.block_line_output('---END OF FRAME SELECTION---')
-op.block_line_output(frameList)
+#op.block_line_output(frameList)
 # region Temp Folder Creation
 '''
 A temporary folder is created to be the folder of chosen frames.

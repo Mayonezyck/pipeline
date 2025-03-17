@@ -238,7 +238,7 @@ def evaluate_depth_maps(pred_folder='temp', gt_folder='/path/to/gt'):
 
     plt.tight_layout()
     plt.show()
-
+    plt.savefig('report.png')
     return [mean_rmse, mean_mae, mean_sq_rel, mean_delta_accuracy, mean_ssim, mean_log_rmse]
 
 # Example usage:
